@@ -15,11 +15,14 @@
 | `js/layout.js` | Floors, shelves, sections, collisions, stairs (pure) |
 | `js/store.js` | Three.js geometry |
 | `js/cameras.js` | Drone, long, walk, orbit, tour (pure) |
-| `js/catalog.js` | Filter, search, cart (pure) |
+| `js/catalog.js` | Aisles, filter/search/Shop by Problem, sort, price label, buy link, shopping list (pure) |
+| `js/shoplist.js` | Shared DOM: product detail, My Shopping List, Buy-from-retailer dialog |
+| `js/listpage.js` | `products.html` 2D listing |
 | `js/main.js` | UI, input, minimap, render loop |
 | `data/products.json` | Demo catalogue (single source) |
 
-If 3D fails to load, the product list and cart still work.
+If 3D fails to load, the side list, shopping list and `products.html` still work.
+NeedMart never takes payments: there is no cart/checkout, only a device-local shopping list and direct retailer links.
 
 ## Planned backend (not built)
 Static frontend -> serverless API (`/chat`, `/tts`, `/stt`, `/orders`, `/auth`). Keys live only in backend
