@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NeedMart — Virtual Supermarket</title>
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+<header><div class="brand">Need<span>Mart</span></div><span class="badge">DEMO</span><button id="cartBtn" type="button">Cart <span id="cartCount">0</span></button></header>
+<main>
+  <section class="stage-col">
+    <nav class="bar" aria-label="Camera">
+      <button type="button" data-mode="drone">Drone</button>
+      <button type="button" data-mode="long">Long shot</button>
+      <button type="button" data-mode="walk">Walk</button>
+      <button type="button" data-mode="orbit">Orbit</button>
+      <button type="button" id="tour">Tour</button>
+      <button type="button" id="plan">Floor plan</button>
+      <button type="button" id="zoomIn" aria-label="Zoom in">＋</button>
+      <button type="button" id="zoomOut" aria-label="Zoom out">－</button>
+      <button type="button" id="reset">Reset</button>
+      <select id="floor" aria-label="Floor"><option value="all">All floors</option><option value="0">Ground</option><option value="1">First</option></select>
+      <select id="dept" aria-label="Go to section"><option value="">Go to section…</option></select>
+      <label><input type="checkbox" id="reduce"> Reduced motion</label>
+    </nav>
+    <div class="stage">
+      <canvas id="scene" aria-label="3D supermarket"></canvas>
+      <div id="loading" role="status">Loading store…</div>
+      <canvas id="map" width="150" height="128" aria-label="Floor map"></canvas>
+      <div id="walkHint" hidden>WASD / arrows to walk · drag to look · <button type="button" id="lock">Mouse look</button> (Esc exits)</div>
+      <div id="joystick" hidden><div id="knob"></div></div>
+      <div id="toast" hidden></div>
+    </div>
+  </section>
+  <aside class="panel">
+    <div id="detail" hidden></div>
+    <h2>Shop by Need</h2>
+    <input id="search" type="search" placeholder="Search products or needs" aria-label="Search products">
+    <div id="tabs"></div><div id="products"></div>
+    <h2>Your Cart</h2><div id="cart"></div>
+    <div class="cartline"><strong>Estimated total</strong><strong id="total">₹0</strong></div>
+    <p class="muted">Demo only. No payment, orders or affiliate links are connected.</p>
+  </aside>
+</main>
+<footer>All products and prices are sample data. Some product links may become affiliate links; we may earn a commission at no extra cost to you.</footer>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
