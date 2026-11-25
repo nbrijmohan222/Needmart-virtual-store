@@ -49,14 +49,16 @@ test('reduced motion blocks the tour and camera easing', () => {
   assert.deepEqual(rig.update(0.016).pos, rig.desired().pos);
 });
 test('catalogue filter and search', () => {
-  assert.equal(C.filterProducts(products).length, 8);
-  assert.ok(C.filterProducts(products, { category: 'Tech' }).every(p => p.category === 'Tech'));
+  assert.equal(C.filterProducts(products).length, products.length);
+  assert.ok(C.filterProducts(products, { category: 'Mobile Accessories' }).every(p => p.category === 'Mobile Accessories'));
   assert.equal(C.filterProducts(products, { query: 'cables' }).length, 1);
 });
-test('cart quantities and total', () => {
-  let cart = C.addToCart(C.addToCart({}, 'demo-01'), 'demo-01');
-  assert.equal(C.cartCount(cart), 2); assert.equal(C.cartTotal(cart, products), 998);
-  cart = C.setQuantity(cart, 'demo-01', 0); assert.deepEqual(cart, {});
+// V3: the cart became a shopping list (NeedMart sells nothing) — quantities only, no total/bill.
+test('shopping list quantities', () => {
+  let list = C.addToList(C.addToList({}, 'demo-01'), 'demo-01');
+  assert.equal(C.listCount(list), 2);
+  list = C.setQuantity(list, 'demo-01', 0); assert.deepEqual(list, {});
+  assert.equal(C.cartTotal, undefined, 'no bill-style totals');
 });
 test('every shelf category has products', () => {
   for (const s of L.SHELVES) assert.ok(C.productForSlot(products, s.category, 3), s.category);
