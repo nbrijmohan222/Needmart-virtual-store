@@ -1,67 +1,61 @@
 import * as L from './layout.js';
 import { CameraRig } from './cameras.js';
 import { buildStore } from './store.js';
-import { filterProducts, addToCart, setQuantity, cartCount, cartTotal } from './catalog.js';
+import { filterProducts, sortProducts, PROBLEMS, CATEGORIES, categoryMeta, listCount } from './catalog.js';
+import { $, el, button, loadCatalogue, getProducts, getList, onListChange, addItem, toast, thumb, priceNode, detailNodes, listNodes, openBuy } from './shoplist.js';
 
-const $ = s => document.querySelector(s);
-const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids); return n; };
-let products = [], cart = {}, category = 'All';
+let products = [], category = 'All', problem = '', goToAisle = null;
+const progress = (pct, text) => { $('#bar').style.width = pct + '%'; if (text) $('#loadText').textContent = text; };
 
-function toast(text) {
-  const t = $('#toast'); t.textContent = text; t.hidden = false;
-  clearTimeout(toast.timer); toast.timer = setTimeout(() => (t.hidden = true), 2400);
-}
-
-/* ---------- catalogue and cart (works even without 3D) ---------- */
-const button = (text, onclick, cls = '') => el('button', { textContent: text, onclick, className: cls, type: 'button' });
-function add(p) { cart = addToCart(cart, p.id); renderCart(); toast(`Added: ${p.name}`); }
+/* ---------- catalogue and shopping list (works even without 3D) ---------- */
 function showDetail(p) {
   document.exitPointerLock?.();
-  const d = $('#detail'); d.hidden = false;
-  d.replaceChildren(el('strong', { textContent: `${p.icon} ${p.name}` }), el('p', { textContent: p.problem_solved }),
-    el('strong', { textContent: `₹${p.price_inr}` }), el('p', { className: 'muted', textContent: 'Demo item. Price and availability are not verified.' }),
-    button('Add to cart', () => add(p)), button('Close', () => (d.hidden = true), 'secondary'));
-  d.scrollIntoView({ block: 'nearest' });
+  const d = $('#detail'); d.hidden = false; d.classList.remove('pop'); void d.offsetWidth; d.classList.add('pop');
+  const dept = L.DEPARTMENTS.find(x => x.category === p.category);
+  d.replaceChildren(...detailNodes(p, { onClose: () => (d.hidden = true), extra: goToAisle && dept ? button('📍 Go to aisle', () => goToAisle(dept), 'secondary') : null }));
+  d.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 function renderProducts() {
-  const list = filterProducts(products, { category, query: $('#search').value });
+  const list = sortProducts(filterProducts(products, { category, problem, query: $('#search').value }));
   $('#products').replaceChildren(...(list.length ? list.map(p => el('div', { className: 'product' },
-    el('div', { className: 'pic', textContent: p.icon }),
-    el('div', {}, el('h3', { textContent: p.name }), el('div', { className: 'muted', textContent: p.category }),
-      el('div', { className: 'price', textContent: `₹${p.price_inr}` }),
-      button('Add', () => add(p)), button('Details', () => showDetail(p), 'secondary'))))
+    thumb(p),
+    el('div', {}, el('h3', { textContent: p.name }), el('div', { className: 'muted', textContent: p.problem_solved }),
+      priceNode(p),
+      button('+ List', () => addItem(p)), button('Details', () => showDetail(p), 'secondary'))))
     : [el('p', { className: 'muted', textContent: 'No matching products.' })]));
 }
-function renderCart() {
-  $('#cartCount').textContent = cartCount(cart);
-  $('#total').textContent = `₹${cartTotal(cart, products)}`;
-  const lines = Object.entries(cart).map(([id, q]) => {
-    const p = products.find(x => x.id === id);
-    const set = n => { cart = setQuantity(cart, id, n); renderCart(); };
-    return el('div', { className: 'cartline' }, el('span', { textContent: p.name }),
-      el('span', {}, button('−', () => set(q - 1), 'secondary'), ` ${q} `, button('+', () => set(q + 1), 'secondary')));
-  });
-  $('#cart').replaceChildren(...(lines.length ? lines : [el('p', { className: 'muted', textContent: 'Your cart is empty.' })]));
+function renderList() {
+  $('#listCount').textContent = listCount(getList());
+  $('#list').replaceChildren(...listNodes({ compact: true }));
 }
-function initShop() {
-  const cats = ['All', ...new Set(products.map(p => p.category))];
-  $('#tabs').replaceChildren(...cats.map(c => {
-    const b = button(c, () => { category = c; for (const x of $('#tabs').children) x.className = x === b ? '' : 'secondary'; renderProducts(); }, c === 'All' ? '' : 'secondary');
+function chips(container, items, isOn, onPick) {
+  container.replaceChildren(...items.map(([value, label, color]) => {
+    const b = button(label, () => { onPick(value); chips(container, items, isOn, onPick); }, 'chip' + (isOn(value) ? ' on' : ''));
+    b.setAttribute('aria-pressed', isOn(value));
+    if (color) b.prepend(el('i', { className: 'dot', style: `background:${color}` }));
     return b;
   }));
+}
+function initShop() {
+  chips($('#tabs'), [['All', 'All'], ...Object.entries(CATEGORIES).map(([c, m]) => [c, c, m.color])], v => v === category, v => { category = v; renderProducts(); });
+  chips($('#problems'), PROBLEMS.map(p => [p.id, p.label]), v => v === problem, v => { problem = problem === v ? '' : v; renderProducts(); });
   $('#search').oninput = renderProducts;
-  $('#cartBtn').onclick = () => $('#cart').scrollIntoView({ behavior: 'smooth' });
-  renderProducts(); renderCart();
+  $('#listBtn').onclick = openBuy;
+  onListChange(renderList);
+  renderProducts(); renderList();
 }
 
 /* ---------- 3D ---------- */
 async function init3D() {
+  progress(40, 'Loading 3D engine…');
   const THREE = await import('three');
   const canvas = $('#scene');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: devicePixelRatio < 2 });
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xdce8ed);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xf1e6d6);
   const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 150);
+  progress(70, 'Building aisles…');
   const store = buildStore(THREE, scene, products);
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const rig = new CameraRig({ reducedMotion: motion.matches });
@@ -90,7 +84,20 @@ async function init3D() {
     syncUI();
   };
   $('#dept').append(...L.DEPARTMENTS.map(d => el('option', { value: d.id, textContent: `${d.floor ? '1F' : 'GF'} · ${d.name}` })));
-  $('#dept').onchange = e => { const d = L.DEPARTMENTS.find(x => x.id === e.target.value); if (d) { rig.goTo(d); syncUI(); } e.target.value = ''; };
+  // Quick jump: a short fade hides the cut (the rig cuts rather than flying through walls).
+  const jump = d => {
+    const f = $('#fade');
+    const go = () => { rig.goTo(d); keys.clear(); syncUI(); toast(`${d.floor ? 'First floor' : 'Ground floor'} · ${d.name}`); };
+    if (rig.reducedMotion) return go();
+    f.classList.add('on'); setTimeout(() => { go(); f.classList.remove('on'); }, 220);
+  };
+  goToAisle = jump;
+  $('#dept').onchange = e => { const d = L.DEPARTMENTS.find(x => x.id === e.target.value); if (d) jump(d); e.target.value = ''; };
+  $('#jump').replaceChildren(...L.DEPARTMENTS.map(d => {
+    const b = button(`${d.floor ? '1F' : 'GF'} · ${d.name}`, () => jump(d), 'chip');
+    b.prepend(el('i', { className: 'dot', style: `background:${d.category ? categoryMeta(d.category).color : '#082f49'}` }));
+    return b;
+  }));
 
   addEventListener('keydown', e => {
     if (e.target.matches('input, select')) return;
@@ -111,8 +118,11 @@ async function init3D() {
     raycaster.setFromCamera(ndc, camera);
     const visible = o => { for (; o; o = o.parent) if (!o.visible) return false; return true; };
     const hit = raycaster.intersectObjects(scene.children, true).find(h => visible(h.object));
-    const p = products.find(x => x.id === hit?.object.userData.productId);
+    const id = hit?.object.userData.productIds?.[hit.instanceId] ?? hit?.object.userData.productId;
+    const p = products.find(x => x.id === id);
     if (p) showDetail(p);
+    const k = L.KIOSKS.find(x => x.id === hit?.object.userData.kioskId);
+    if (k) tip(k);
   }
   canvas.addEventListener('contextmenu', e => e.preventDefault());
   canvas.addEventListener('pointerdown', e => {
@@ -159,8 +169,9 @@ async function init3D() {
     const sx = x => (x + 14) / 28 * map.width, sz = z => (z + 12) / 24 * map.height;
     const rect = (x, z, w, d, c) => { g.fillStyle = c; g.fillRect(sx(x - w / 2), sz(z - d / 2), w / 28 * map.width, d / 24 * map.height); };
     rect(0, 0, 28, 24, '#eef3f7');
-    for (const s of L.SHELVES) if (s.floor === floor) rect(s.x, s.z, 3.3, 0.8, '#31566c');
-    if (!floor) for (const c of L.CHECKOUTS) rect(c.x, c.z, 3.2, 1.2, '#087e9a');
+    for (const s of L.SHELVES) if (s.floor === floor) rect(s.x, s.z, 3.3, 0.8, categoryMeta(s.category).color);
+    if (!floor) for (const c of L.HELP_DESKS) rect(c.x, c.z, 3.2, 1.2, '#0e5a43');
+    for (const k of L.KIOSKS) if (k.floor === floor) rect(k.x, k.z, 0.9, 0.9, '#fbbf24');
     rect(12.5, 1.5, 3, 9, '#9fb0ba');
     g.fillStyle = '#082f49'; g.font = '11px system-ui'; g.fillText(floor ? 'First floor' : 'Ground floor', 5, 13);
     if (rig.mode === 'walk') {
@@ -200,25 +211,61 @@ async function init3D() {
     const floor = walking ? L.floorOf(rig.walker.y) : shownFloor === '1' ? 1 : 0;
     if (walking && $('#floor').value !== String(floor)) $('#floor').value = String(floor);
     drawMap(floor);
+    if (walking) { const k = L.nearbyKiosk(rig.walker); if (k && k !== lastKiosk) tip(k); lastKiosk = k || (lastKiosk && L.nearbyKiosk(rig.walker, 3.5)) || null; }
     renderer.render(scene, camera);
   });
   syncUI();
-  $('#loading').hidden = true;
+  progress(100, 'Store is open');
+  const enter = $('#enter'); enter.disabled = false; enter.textContent = 'Enter Store';
+  enter.onclick = () => {
+    $('#welcome').classList.add('gone');
+    const want = decodeURIComponent((location.hash.match(/aisle=([^&]+)/) || [])[1] || '');
+    const d = L.DEPARTMENTS.find(x => x.category === want);
+    if (d) jump(d); else setTimeout(() => tip(L.KIOSKS[0]), 600);
+  };
+  // Test/debug hook (used by the headless browser check)
+  window.__needmart = {
+    ready: true, rig, setMode, products,
+    goTo: id => { const d = L.DEPARTMENTS.find(x => x.id === id); rig.goTo(d); rig.update(1); syncUI(); },
+    get state() { return { mode: rig.mode, ...rig.walker, floor: L.floorOf(rig.walker.y) }; },
+    info: () => renderer.info.render,
+    // Screen point (client px) of a product package that a click there would really hit, for the browser check.
+    productPoint() {
+      const r = canvas.getBoundingClientRect(), m = new THREE.Matrix4(), v = new THREE.Vector3();
+      for (const im of store.hotspots) {
+        if (!im.parent.visible) continue;
+        for (let i = 0; i < im.count; i++) {
+          if (!im.userData.productIds[i]) continue;
+          im.getMatrixAt(i, m); v.setFromMatrixPosition(m).project(camera);
+          if (Math.abs(v.x) > 0.7 || Math.abs(v.y) > 0.7 || v.z > 1) continue;
+          raycaster.setFromCamera(new THREE.Vector2(v.x, v.y), camera);
+          const hit = raycaster.intersectObjects(scene.children, true).find(h => h.object.visible && h.object.parent.visible);
+          if (hit?.object === im && hit.instanceId === i) return { x: r.left + (v.x + 1) / 2 * r.width, y: r.top + (1 - v.y) / 2 * r.height, id: im.userData.productIds[i] };
+        }
+      }
+      return null;
+    },
+  };
+}
+let lastKiosk = null, tipTimer;
+function tip(k) {
+  const b = $('#bubble'); b.replaceChildren(el('strong', { textContent: 'ℹ NeedMart help' }), el('span', { textContent: k.tip }));
+  b.hidden = false; clearTimeout(tipTimer); tipTimer = setTimeout(() => (b.hidden = true), 6500);
 }
 
 async function start() {
   try {
-    const res = await fetch('data/products.json');
-    if (!res.ok) throw new Error(res.status);
-    products = (await res.json()).products;
+    progress(20, 'Loading products…');
+    products = await loadCatalogue();
     initShop();
   } catch (err) {
-    console.error(err); $('#loading').textContent = 'Could not load products. Serve this folder with a local server and reload.'; return;
+    console.error(err); progress(100, 'Could not load products. Serve this folder with a local server and reload.'); return;
   }
   try { await init3D(); }
   catch (err) {
     console.error(err);
-    $('#loading').textContent = '3D store could not start (no WebGL or no network). You can still shop from the list.';
+    progress(100, '3D store could not start (no WebGL or no network). You can still browse the list.');
+    const enter = $('#enter'); enter.disabled = false; enter.textContent = 'Browse products'; enter.onclick = () => (location.href = 'products.html');
   }
 }
 start();
