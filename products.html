@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#082f49">
+<title>NeedMart — Product list</title>
+<meta name="description" content="Everyday problem-solving products, organised by need. Buy on the retailer's site.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="listpage">
+<header><a class="brand" href="index.html">Need<span>Mart</span></a><span class="badge">DEMO</span><a class="hdr-link" href="index.html">🏬 <span class="hide-sm">3D store</span></a><button id="listBtn" type="button">🧾 <span class="hide-sm">My Shopping List</span> <span class="count" id="listCount">0</span></button></header>
+<main class="wrap">
+  <h1>Shop by need</h1>
+  <p class="muted">Every item solves an everyday problem. Add it to your list, then buy on the retailer's site.</p>
+  <div class="tools"><input id="search" type="search" placeholder="Search products or problems…" aria-label="Search products">
+    <select id="sort" aria-label="Sort"><option value="">Sort: featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name A–Z</option></select></div>
+  <div class="lbl">Aisle</div><div id="tabs" class="chips"></div>
+  <div class="lbl">Shop by problem</div><div id="problems" class="chips"></div>
+  <p id="sortNote" class="fine" hidden>Only verified, dated prices are sorted; items showing “Check price” are listed last.</p>
+  <div id="grid" class="grid" aria-live="polite"><p class="muted">Loading products…</p></div>
+</main>
+<footer class="site-foot"><p><strong>As an Amazon Associate I earn from qualifying purchases.</strong></p>
+<p>Affiliate disclosure: some links on NeedMart are affiliate links (for example Amazon or Flipkart). If you buy through them we may earn a commission at no extra cost to you. NeedMart does not sell products or process payments. Prices and availability are accurate as of the date/time indicated and are subject to change. Items marked “Demo” are placeholders, not live offers.</p></footer>
+<div id="toast" class="toast" role="status" hidden></div>
+<script type="module" src="js/listpage.js"></script>
+</body>
+</html>
