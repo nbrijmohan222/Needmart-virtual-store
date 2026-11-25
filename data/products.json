@@ -1,0 +1,93 @@
+{
+  "notice": "Sample/demo products only. Replace with verified products and approved affiliate links before publishing.",
+  "products": [
+    {
+      "id": "demo-01",
+      "name": "Stackable Kitchen Storage Set",
+      "category": "Kitchen",
+      "problem_solved": "Pantry clutter and inefficient storage",
+      "price_inr": 499,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🥡"
+    },
+    {
+      "id": "demo-02",
+      "name": "Manual Vegetable Chopper",
+      "category": "Kitchen",
+      "problem_solved": "Time-consuming vegetable preparation",
+      "price_inr": 349,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🥕"
+    },
+    {
+      "id": "demo-03",
+      "name": "Reusable Microfiber Cleaning Cloths",
+      "category": "Home",
+      "problem_solved": "Everyday surface cleaning",
+      "price_inr": 199,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🧽"
+    },
+    {
+      "id": "demo-04",
+      "name": "Adjustable Mobile Stand",
+      "category": "Tech",
+      "problem_solved": "Hands-free phone viewing",
+      "price_inr": 249,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "📱"
+    },
+    {
+      "id": "demo-05",
+      "name": "Cable Organizer Clips",
+      "category": "Tech",
+      "problem_solved": "Tangled desk and charging cables",
+      "price_inr": 129,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🔌"
+    },
+    {
+      "id": "demo-06",
+      "name": "Desk Organizer Tray",
+      "category": "Office",
+      "problem_solved": "Cluttered work desk",
+      "price_inr": 299,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🗂️"
+    },
+    {
+      "id": "demo-07",
+      "name": "Travel Toiletry Pouch",
+      "category": "Personal Care",
+      "problem_solved": "Keeps toiletries together while travelling",
+      "price_inr": 399,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🧴"
+    },
+    {
+      "id": "demo-08",
+      "name": "Non-slip Drawer Organizer",
+      "category": "Home",
+      "problem_solved": "Small household items are hard to sort",
+      "price_inr": 279,
+      "affiliate_url": "",
+      "source": "",
+      "verified_at": "",
+      "icon": "🧺"
+    }
+  ]
+}
