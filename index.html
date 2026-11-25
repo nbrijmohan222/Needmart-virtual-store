@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#082f49">
+<meta name="description" content="Walk a two-floor 3D supermarket of everyday problem-solvers. NeedMart is a guide; you buy on the retailer's site.">
 <title>NeedMart — Virtual Supermarket</title>
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 </head>
 <body>
-<header><div class="brand">Need<span>Mart</span></div><span class="badge">DEMO</span><button id="cartBtn" type="button">Cart <span id="cartCount">0</span></button></header>
+<header><a class="brand" href="index.html">Need<span>Mart</span></a><span class="badge">DEMO</span><a class="hdr-link" href="products.html">☰ <span class="hide-sm">Product list</span></a><button id="listBtn" type="button">🧾 <span class="hide-sm">My Shopping List</span> <span class="count" id="listCount">0</span></button></header>
 <main>
   <section class="stage-col">
     <nav class="bar" aria-label="Camera">
@@ -24,26 +26,35 @@
       <select id="dept" aria-label="Go to section"><option value="">Go to section…</option></select>
       <label><input type="checkbox" id="reduce"> Reduced motion</label>
     </nav>
+    <nav id="jump" class="jump" aria-label="Quick jump to aisle"></nav>
     <div class="stage">
       <canvas id="scene" aria-label="3D supermarket"></canvas>
-      <div id="loading" role="status">Loading store…</div>
+      <div id="welcome" role="dialog" aria-label="Welcome">
+        <div class="wcard"><div class="logo" aria-hidden="true">🛒</div><h1>Need<span>Mart</span></h1>
+        <p>A virtual supermarket of everyday problem-solvers. Walk the aisles, find the fix, buy it on the retailer's site.</p>
+        <div class="track"><i id="bar"></i></div><div id="loadText" role="status">Starting…</div>
+        <div class="wbtns"><button id="enter" type="button" disabled>Opening doors…</button><a class="ghost" href="products.html">Browse list instead</a></div>
+        <p class="fine">NeedMart is a guide, not a shop: we don't sell items or take payments.</p></div>
+      </div>
+      <div id="fade" aria-hidden="true"></div>
+      <div id="bubble" role="status" hidden></div>
       <canvas id="map" width="150" height="128" aria-label="Floor map"></canvas>
       <div id="walkHint" hidden>WASD / arrows to walk · drag to look · <button type="button" id="lock">Mouse look</button> (Esc exits)</div>
       <div id="joystick" hidden><div id="knob"></div></div>
-      <div id="toast" hidden></div>
     </div>
   </section>
   <aside class="panel">
     <div id="detail" hidden></div>
     <h2>Shop by Need</h2>
     <input id="search" type="search" placeholder="Search products or needs" aria-label="Search products">
-    <div id="tabs"></div><div id="products"></div>
-    <h2>Your Cart</h2><div id="cart"></div>
-    <div class="cartline"><strong>Estimated total</strong><strong id="total">₹0</strong></div>
-    <p class="muted">Demo only. No payment, orders or affiliate links are connected.</p>
+    <div class="lbl">Shop by problem</div><div id="problems" class="chips"></div>
+    <div class="lbl">Aisle</div><div id="tabs" class="chips"></div><div id="products"></div>
+    <h2 id="listHead">My Shopping List</h2><div id="list"></div>
   </aside>
 </main>
-<footer>All products and prices are sample data. Some product links may become affiliate links; we may earn a commission at no extra cost to you.</footer>
+<footer class="site-foot"><p><strong>As an Amazon Associate I earn from qualifying purchases.</strong></p>
+<p>Affiliate disclosure: some links on NeedMart are affiliate links (for example Amazon or Flipkart). If you buy through them we may earn a commission at no extra cost to you. NeedMart does not sell products or process payments. Prices and availability are accurate as of the date/time indicated and are subject to change. Items marked “Demo” are placeholders, not live offers.</p></footer>
+<div id="toast" class="toast" role="status" hidden></div>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
