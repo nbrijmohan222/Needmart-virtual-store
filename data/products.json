@@ -1,15 +1,24 @@
 {
-  "notice": "Sample/demo products only. Replace with verified products and approved affiliate links before publishing.",
+  "notice": "Sample/demo products only. price_inr values are unverified placeholders and are never displayed unless verified_at is set. Replace with verified products and approved affiliate links before publishing.",
+  "schema": "id, name, category, problem_solved, key_benefits[], target_customer, price_inr (number|null), image_url, affiliate_url, commission_info, source, verified_at (ISO 8601 with offset), status (demo|verified), icon (emoji fallback)",
   "products": [
     {
       "id": "demo-01",
       "name": "Stackable Kitchen Storage Set",
       "category": "Kitchen",
       "problem_solved": "Pantry clutter and inefficient storage",
+      "key_benefits": [
+        "Space-saving stackable containers",
+        "Keeps pantry items easy to reach"
+      ],
+      "target_customer": "Home cooks with small kitchens",
       "price_inr": 499,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🥡"
     },
     {
@@ -17,54 +26,93 @@
       "name": "Manual Vegetable Chopper",
       "category": "Kitchen",
       "problem_solved": "Time-consuming vegetable preparation",
+      "key_benefits": [
+        "Quick prep for everyday vegetables",
+        "Reduces repetitive chopping"
+      ],
+      "target_customer": "Busy households cooking daily",
       "price_inr": 349,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🥕"
     },
     {
       "id": "demo-03",
       "name": "Reusable Microfiber Cleaning Cloths",
-      "category": "Home",
+      "category": "Home Utility",
       "problem_solved": "Everyday surface cleaning",
+      "key_benefits": [
+        "Washable and reusable",
+        "Less disposable waste"
+      ],
+      "target_customer": "Anyone cleaning home surfaces regularly",
       "price_inr": 199,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🧽"
     },
     {
       "id": "demo-04",
       "name": "Adjustable Mobile Stand",
-      "category": "Tech",
+      "category": "Mobile Accessories",
       "problem_solved": "Hands-free phone viewing",
+      "key_benefits": [
+        "Adjustable viewing angle",
+        "Easier video calls and recipes"
+      ],
+      "target_customer": "People who watch or call on their phone at a desk or table",
       "price_inr": 249,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "📱"
     },
     {
       "id": "demo-05",
       "name": "Cable Organizer Clips",
-      "category": "Tech",
+      "category": "Office Productivity",
       "problem_solved": "Tangled desk and charging cables",
+      "key_benefits": [
+        "Keeps charging cables in place",
+        "Tidier desk"
+      ],
+      "target_customer": "Home-office and student desks",
       "price_inr": 129,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🔌"
     },
     {
       "id": "demo-06",
       "name": "Desk Organizer Tray",
-      "category": "Office",
+      "category": "Office Productivity",
       "problem_solved": "Cluttered work desk",
+      "key_benefits": [
+        "Simple compartments for daily essentials"
+      ],
+      "target_customer": "Anyone working or studying at a desk",
       "price_inr": 299,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🗂️"
     },
     {
@@ -72,22 +120,76 @@
       "name": "Travel Toiletry Pouch",
       "category": "Personal Care",
       "problem_solved": "Keeps toiletries together while travelling",
+      "key_benefits": [
+        "Keeps toiletries together",
+        "Compact for a bag or shelf"
+      ],
+      "target_customer": "Travellers and anyone with a crowded bathroom shelf",
       "price_inr": 399,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🧴"
     },
     {
       "id": "demo-08",
       "name": "Non-slip Drawer Organizer",
-      "category": "Home",
+      "category": "Home Utility",
       "problem_solved": "Small household items are hard to sort",
+      "key_benefits": [
+        "Flexible compartments",
+        "Non-slip base"
+      ],
+      "target_customer": "Households with messy drawers",
       "price_inr": 279,
+      "image_url": "",
       "affiliate_url": "",
+      "commission_info": "",
       "source": "",
       "verified_at": "",
+      "status": "demo",
       "icon": "🧺"
+    },
+    {
+      "id": "demo-09",
+      "name": "Travel Neck Pillow",
+      "category": "Travel",
+      "problem_solved": "Neck strain on long journeys",
+      "key_benefits": [
+        "Supports the neck while seated",
+        "Easier rest on trains, buses and flights"
+      ],
+      "target_customer": "Frequent travellers and commuters",
+      "price_inr": null,
+      "image_url": "",
+      "affiliate_url": "",
+      "commission_info": "",
+      "source": "",
+      "verified_at": "",
+      "status": "demo",
+      "icon": "🧳"
+    },
+    {
+      "id": "demo-10",
+      "name": "Phone Grip Holder",
+      "category": "Mobile Accessories",
+      "problem_solved": "Dropping the phone during one-handed use",
+      "key_benefits": [
+        "Firmer one-handed grip",
+        "Doubles as a small stand"
+      ],
+      "target_customer": "People using large phones on the go",
+      "price_inr": null,
+      "image_url": "",
+      "affiliate_url": "",
+      "commission_info": "",
+      "source": "",
+      "verified_at": "",
+      "status": "demo",
+      "icon": "📲"
     }
   ]
 }
